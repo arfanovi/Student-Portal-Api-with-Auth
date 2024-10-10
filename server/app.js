@@ -4,6 +4,18 @@ const dotenv = require('dotenv');
 const routes = require('./routes/index');
 const cookieParser = require('cookie-parser');
 
+
+
+// const bodyParser = require('body-parser');
+// const cors = require('cors');
+
+
+// app.use(bodyParser.json());
+// app.use(bodyParser.urlencoded({ extended: true }));
+// app.use(cors());
+
+
+
 dotenv.config();
 const app = express();
 connectDB();
