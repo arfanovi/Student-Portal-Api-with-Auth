@@ -2,12 +2,15 @@ const express = require('express');
 const connectDB = require('./config/database');
 const dotenv = require('dotenv');
 const routes = require('./routes/index');
+const cookieParser = require('cookie-parser');
 
 dotenv.config();
 const app = express();
 connectDB();
 
 // Middleware to parse JSON request bodies 
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 app.use(express.json());
 
 app.use('/api', routes)

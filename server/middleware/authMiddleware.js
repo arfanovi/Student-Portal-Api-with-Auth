@@ -5,7 +5,12 @@ dotenv.config();
 
 
 const authMiddleware = (req, res, next ) => {
-    const token = res.cookies.jwt;
+    
+    // const token = req.cookies.jwt;
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+
+    console.log("Received Token", token);
 
     if(!token){
         return res.status(401).json({Message: "Unauthorized"})
@@ -13,6 +18,8 @@ const authMiddleware = (req, res, next ) => {
 
     try{
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+        
         req.user = decoded;
         next();
     } catch(error){
