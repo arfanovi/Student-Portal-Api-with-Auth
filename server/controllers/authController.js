@@ -33,5 +33,38 @@ const register = async( req, res) => {
 };
 
 
+const login = async(req, res) => {
+    try{
+        const {email, password} =req.body;
 
-module.exports = {register};
+        const student = await Student.findOne({email});
+        if(!student){
+            return res.status(400).json({Message: 'Invalid User'});
+        }
+
+        const isPasswordMatch = await bcryptjs.compare(password, student.password);
+        if(!isPasswordMatch){
+            return res.status(400).json({Message: 'invalid Password'});
+        }
+
+        const token = jwtHelper.generateToken(student._id);
+        res.cookie('jwt', token, {httpOnly: true});
+        res.status(201).json({
+            Message: 'Login Successful',
+            student: {
+                id: student._id,
+                name: student.name,
+                email: student.email
+            },
+            token,
+        
+        })
+    } catch(error){
+        console.error('Login Error', error);
+        res.status(500).json({Message: 'Login Failed'});
+    }
+};
+
+
+
+module.exports = {register , login};
