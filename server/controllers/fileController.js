@@ -1,6 +1,7 @@
 const File = require('../models/File');
-// const path = require('path');
-// const fs = require('fs');
+const path = require('path');
+const fs = require('fs');
+const mongoose = require('mongoose');
 
 
 const uploadFile = async (req, res) => {
@@ -32,8 +33,6 @@ const uploadFile = async (req, res) => {
     }
 }
 
-
-
 const getFile = async(req, res)=>{
 
     try{
@@ -53,4 +52,19 @@ const getFile = async(req, res)=>{
 }
 
 
-module.exports = {uploadFile, getFile}
+
+
+const deleteFile = async (req, res)=>{
+    try{
+        const file  = await File.findById(req.params.fileId);
+        if(!file || !file.studentId.equals(req.user.id)){
+            return res.status(403).json({message: 'Unauthorized'});
+        }
+        await File.findByIdAndDelete(req.params.fileId);
+        fs.unlinkSync(file.path);
+        res.json({message: 'File deleted successfully'});
+    } catch(error){
+
+    }
+}
+module.exports = {uploadFile, getFile, deleteFile};
