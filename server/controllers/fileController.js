@@ -34,5 +34,23 @@ const uploadFile = async (req, res) => {
 
 
 
+const getFile = async(req, res)=>{
 
-module.exports = {uploadFile}
+    try{
+        const files = await File.find({studentId: req.user.id}, 'name');
+
+
+        if(!files || files.length === 0){
+            return res.status(400).json({message: 'No Files Found'});
+        }
+
+        return res.status(200).json({files});
+
+    } catch(error){
+        console.error('Get Files Error:', error);
+        return res.status(500).json({message: 'Failed to get files'});
+    }
+}
+
+
+module.exports = {uploadFile, getFile}
